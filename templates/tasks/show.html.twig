@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+{% block component %}
+
+    <!--importants-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.0/main.min.css" integrity="sha256-uq9PNlMzB+1h01Ij9cx7zeE2OR2pLAfRw3uUUOOPKdA=" crossorigin="anonymous">
+    <link
+            rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous">
+
+{% endblock %}
+{% block title %}Tasks{% endblock %}
+
+{% block body %}
+    <h1>Tasks</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ task.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ task.titre }}</td>
+            </tr>
+            <tr>
+                <th>Start_date</th>
+                <td>{{ task.startDate ? task.startDate|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>End_date</th>
+                <td>{{ task.endDate ? task.endDate|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Is_valid</th>
+                <td>{{ task.isValid ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <a href="{{ path('app_tasks_edit', {'id': task.id}) }}">edit</a>
+
+    {{ include('tasks/_delete_form.html.twig') }}
+{% endblock %}
+
