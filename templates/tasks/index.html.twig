@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+{%  block body %}
+
+    <section class="services-layout1 pt-130">
+    <div class="bg-img"><img src="{{asset("tasks/2.jpg") }}" alt="background"></div>
+    <div class="container">
+        <div class="row">
+
+            <div class="col-sm-12 col-md-12 col-lg-6 offset-lg-3">
+                <div class="heading text-center mb-60">
+                    <h3 class="heading__title">Fournir des soins médicaux aux plus malades de notre communauté.</h3>
+                        {% if tasks is empty %}
+                    <h2 class="heading__subtitle">Aucune task pour le moment <i class="fas fa-smile"></i></h2>
+                            {% else %}
+                                <h2 class="heading__subtitle">
+                                {% set length =  tasks|length  %}
+                                   vous avez  <span  class="count"> {{ length}} </span> task
+                                </h2>
+                    {%  endif %}
+
+                </div><!-- /.heading -->
+            </div><!-- /.col-lg-6 -->
+            <div class="col-sm-12 col-md-12 col-lg-6 offset-lg-3">
+
+                <canvas id="categories" width="400" height="100"></canvas>
+
+                {#  <canvas id="annonces" width="400" height="100"></canvas>#}
+{% if valid is defined and n_valid is defined %}
+                <script>
+                    let categories = document.querySelector("#categories")
+                    let valid = "{{ valid|raw }}";
+                    let nvalid = "{{ n_valid|raw }}";
+                    let categGraph = new Chart(categories, {
+                        type: "pie",
+                        data: {
+                            labels: ["valid","non valid"],
+                            datasets: [{
+                                label: "pourcentage de validation des tasks",
+                                data:[valid,nvalid] ,
+                                backgroundColor:["#4682B4","#FF6347"]
+                            }]
+                        }
+                    })
+                </script>
+                {%  endif %}
+            </div>
+        </div><!-- /.row -->
+        {%  if user_pro is defined %}
+        <div class="row">
+            <!-- As a link -->
+
+            <nav class="navbar navbar-light bg-light">
+                <a class="navbar-brand" href="{{ path('app_tasks_new', {'idP':user_pro}) }}"><i  style="color: #00d084" class="fa fa-plus-circle" aria-hidden="true"> attribuer des tasks</i>
+                </a>
+            </nav>
+            {% endif  %}
+
+
+        </div>
+        <div class="row">
+
+            <!-- service item #1 -->
+            {% for task in tasks %}
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                {% for type, messages in app.flashes() %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ type }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                <div class="service-item">
+
+                    <div class="">
+
+                        <a href="{{ path('app_task_items', {'id': task.id}) }} " >
+                            <i class="fas fa-folder service__icon"></i>  </a>
+                            <h4 class="service__title">Titre : {{ task.titre }}
+                            {% if task.isvalid !=0 %}
+                                <i  style="color: #00d084" class="fas fa-check"></i>
+                                {%  else %}
+                                    &nbsp; <i style="color: orangered" class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                            {%  endif %}
+
+                            </h4>
+
+
+                        <div class="member__img">
+                            <div class="member__hover">
+                                {% if role=="user" %}
+                                <ul class="social-icons list-unstyled mb-0">
+                                    <a href="{{ path('app_tasks_edit', {'id': task.id}) }}">  <button class="btn-sm "><i class="fas fa-edit" style="color: #ca0a54"></i></button></a>
+
+
+                                    <form method="post" action="{{ path('app_tasks_delete', {'id': task.id}) }}" onsubmit="return confirm('est ce que vous étes sure de vouloir supprimer le Task?');">
+                                        <input   type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
+                                        <li> <button class=" btn-sm "><i style="color: #ca0a0a" class="fas fa-trash fa-1x"></i></button></li>
+                                    </form>
+
+
+
+                                </ul><!-- /.social-icons -->
+                                {% endif %}
+                            </div><!-- /.member-hover -->
+                        </div>
+                    </div><!-- /.service__icon -->
+
+
+
+                    <div class="service__content">
+
+
+                        <ul class="list-items list-items-layout1 list-unstyled">
+
+                            <li><p> <i class="fas fa-calendar"></i>   <span style="color: white" >hh</span>{{ task.startDate ? task.startDate|date('Y-m-d') : '' }}</p></li>
+                           <li> <p> <i class="fas fa-calendar"></i>   <span style="color: white" >hh</span>{{ task.endDate ? task.endDate|date('Y-m-d') : '' }} </p></li>
+                        </ul>
+
+                    </div><!-- /.service__content -->
+                </div><!-- /.service-item -->
+            </div><!-- /.col-lg-4 -->
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<script>$('.count').each(function () {
+        $(this).prop('Counter',0).animate({
+            Counter: $(this).text()
+        }, {
+            duration: 4000,
+            easing: 'swing',
+            step: function (now) {
+                $(this).text(Math.ceil(now));
+            }
+        });
+    });</script>
+{% endblock %}
+
+
+
+
+
+
+
